@@ -517,6 +517,26 @@ def is_valid_email_address(email_address):
 	# requirements = re
 	return EMAIL_REGEX.match(email_address) != None
 
+def get_ip_networks_from_file(filename, strict=True):
+	"""
+	Quickly generate a list of IPv4Networks from a file with built-in validation
+
+	:param str filename: The file to be parsed
+	:param bool strict: If true, raises errors when invalid networks are encountered.
+	:return: list
+	"""
+	with open(filename) as fin:
+		lst = []
+		for x in fin.readlines():
+			try:
+				lst.append(ipaddress.ip_network(x.strip()))
+			except ValueError as err:
+				if strict:
+					raise err
+				else:
+					continue
+		return lst
+
 def get_ip_list(ip_network, mask=None):
 	"""
 	Quickly convert an IPv4 or IPv6 network (CIDR or Subnet) to a list
